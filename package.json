@@ -14,16 +14,12 @@
   "contributes": {
     "commands": [
       {
-        "command": "confetti-code.helloWorld",
-        "title": "Hello World"
+        "command": "confetti-code.showConfettiSettings",
+        "title": "Show Confetti Settings"
       },
       {
-        "command": "confetti-code.showConfetti",
-        "title": "Show Confetti"
-      },
-      {
-        "command": "confetti-code.showNiceConfetti",
-        "title": "Show Nice Confetti"
+        "command": "confetti-code.triggerConfetti",
+        "title": "Trigger Confetti"
       }
     ]
   },
