@@ -20,6 +20,10 @@
       {
         "command": "confetti-code.showConfetti",
         "title": "Show Confetti"
+      },
+      {
+        "command": "confetti-code.showNiceConfetti",
+        "title": "Show Nice Confetti"
       }
     ]
   },

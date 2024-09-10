@@ -35,6 +35,94 @@ class ConfettiParticle {
   }
 }
 
+function showNiceConfetti() {
+  const panel = vscode.window.createWebviewPanel(
+    "niceConfettiView",
+    "Nice Confetti",
+    vscode.ViewColumn.Two,
+    {
+      enableScripts: true,
+    }
+  );
+
+  panel.webview.html = getNiceConfettiWebviewContent();
+}
+
+function getNiceConfettiWebviewContent() {
+  return `<!DOCTYPE html>
+    <html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Nice Confetti</title>
+        <script src="https://unpkg.com/react@17/umd/react.production.min.js"></script>
+        <script src="https://unpkg.com/react-dom@17/umd/react-dom.production.min.js"></script>
+        <script src="https://unpkg.com/babel-standalone@6/babel.min.js"></script>
+        <style>
+            body, html { margin: 0; padding: 0; height: 100%; overflow: hidden; }
+            #root { width: 100%; height: 100%; }
+        </style>
+    </head>
+    <body>
+        <div id="root"></div>
+        <script type="text/babel">
+            const Confetti = () => {
+                const [confetti, setConfetti] = React.useState([]);
+
+                React.useEffect(() => {
+                    const colors = ['#ff0000', '#00ff00', '#0000ff', '#ffff00', '#ff00ff', '#00ffff'];
+                    const newConfetti = Array.from({ length: 50 }, (_, i) => ({
+                        id: i,
+                        x: Math.random() * 100,
+                        y: -10 - Math.random() * 10,
+                        size: 5 + Math.random() * 5,
+                        color: colors[Math.floor(Math.random() * colors.length)],
+                        speed: 1 + Math.random() * 3,
+                        angle: Math.random() * 360,
+                        rotation: Math.random() * 360,
+                        rotationSpeed: -5 + Math.random() * 10,
+                    }));
+
+                    setConfetti(newConfetti);
+
+                    const animationFrame = requestAnimationFrame(function animate() {
+                        setConfetti(prev => prev.map(piece => ({
+                            ...piece,
+                            y: piece.y + piece.speed,
+                            x: piece.x + Math.sin(piece.angle * Math.PI / 180) * 0.5,
+                            angle: piece.angle + 1,
+                            rotation: (piece.rotation + piece.rotationSpeed) % 360,
+                        })).filter(piece => piece.y < 110));
+
+                        requestAnimationFrame(animate);
+                    });
+
+                    return () => cancelAnimationFrame(animationFrame);
+                }, []);
+
+                return (
+                    <svg viewBox="0 0 100 100" style={{ width: '100%', height: '100%', overflow: 'visible' }}>
+                        {confetti.map(piece => (
+                            <rect
+                                key={piece.id}
+                                x={piece.x}
+                                y={piece.y}
+                                width={piece.size}
+                                height={piece.size / 2}
+                                fill={piece.color}
+                                transform={\`rotate(\${piece.rotation}, \${piece.x + piece.size / 2}, \${piece.y + piece.size / 4})\`}
+                            />
+                        ))}
+                    </svg>
+                );
+            };
+
+            ReactDOM.render(<Confetti />, document.getElementById('root'));
+        </script>
+    </body>
+    </html>`;
+}
+
 function showConfetti() {
   console.log("showConfetti function called");
 
@@ -144,6 +232,16 @@ export function activate(context: vscode.ExtensionContext) {
   );
 
   context.subscriptions.push(confettiDisposable);
+
+  let niceConfettiDisposable = vscode.commands.registerCommand(
+    "confetti-code.showNiceConfetti",
+    () => {
+      console.log("showNiceConfetti command triggered");
+      showNiceConfetti();
+    }
+  );
+
+  context.subscriptions.push(niceConfettiDisposable);
 }
 
 export function deactivate() {}
