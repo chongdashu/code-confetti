@@ -229,31 +229,31 @@ function getConfettiWebviewContent() {
 			  let confettiSettings = {
 				  particleCount: 100,
 				  spread: 70,
-				  angle: 90,
 				  colors: ['#ff0000', '#00ff00', '#0000ff'],
 				  shapes: ['square', 'circle'],
 				  origins: ['topLeft', 'topCenter', 'topRight', 'middleLeft', 'center', 'middleRight', 'bottomLeft', 'bottomCenter', 'bottomRight']
 			  };
 			  
 			  const originMap = {
-				  topLeft: { x: 0, y: 0 },
-				  topCenter: { x: 0.5, y: 0 },
-				  topRight: { x: 1, y: 0 },
-				  middleLeft: { x: 0, y: 0.5 },
-				  center: { x: 0.5, y: 0.5 },
-				  middleRight: { x: 1, y: 0.5 },
-				  bottomLeft: { x: 0, y: 1 },
-				  bottomCenter: { x: 0.5, y: 1 },
-				  bottomRight: { x: 1, y: 1 }
+				  topLeft: { x: 0, y: 0, angle: 316 },
+				  topCenter: { x: 0.5, y: 0, angle: 270 },
+				  topRight: { x: 1, y: 0, angle: 225 },
+				  middleLeft: { x: 0, y: 0.5, angle: 0 },
+				  center: { x: 0.5, y: 0.5, angle: 270 },
+				  middleRight: { x: 1, y: 0.5, angle: 180 },
+				  bottomLeft: { x: 0, y: 1, angle: 45 },
+				  bottomCenter: { x: 0.5, y: 1, angle: 90 },
+				  bottomRight: { x: 1, y: 1, angle: 135 }
 			  };
 			  
 			  function triggerConfetti() {
-				  const origin = originMap[confettiSettings.origins[Math.floor(Math.random() * confettiSettings.origins.length)]];
+				  const originKey = confettiSettings.origins[Math.floor(Math.random() * confettiSettings.origins.length)];
+				  const origin = originMap[originKey];
 				  myConfetti({
 					  particleCount: confettiSettings.particleCount,
 					  spread: confettiSettings.spread,
-					  angle: confettiSettings.angle,
-					  origin: origin,
+					  angle: origin.angle,
+					  origin: { x: origin.x, y: origin.y },
 					  colors: confettiSettings.colors,
 					  shapes: confettiSettings.shapes
 				  });
