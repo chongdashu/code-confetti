@@ -46,7 +46,7 @@ typings/
 .env.production
 
 # VSCode settings
-.vscode/
+# .vscode/
 .history/
 
 # Build output

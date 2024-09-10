@@ -91,108 +91,97 @@ function triggerConfetti() {
 }
 
 function getPlaygroundWebviewContent() {
-  return `<!DOCTYPE html>
-		<html lang="en">
-		<head>
-			<meta charset="UTF-8">
-			<meta name="viewport" content="width=device-width, initial-scale=1.0">
-			<title>Confetti Playground</title>
-			<style>
-				/* ... (previous styles remain the same) ... */
-			</style>
-		</head>
-		<body>
-			<h2>Confetti Playground</h2>
-			<div class="control-group">
-				<label for="particleCount">Particle Count:</label>
-				<input type="range" id="particleCount" min="10" max="200" value="100">
-				<span id="particleCountValue">100</span>
+	return `<!DOCTYPE html>
+	<html lang="en">
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<title>Confetti Playground</title>
+		<script src="https://cdn.tailwindcss.com"></script>
+	</head>
+	<body class="bg-gray-100 text-gray-800 p-6">
+		<h2 class="text-2xl font-bold mb-6">Confetti Playground</h2>
+		<div class="space-y-6">
+			<div>
+				<label for="particleCount" class="block mb-2">Particle Count: <span id="particleCountValue">100</span></label>
+				<input type="range" id="particleCount" min="10" max="200" value="100" class="w-full">
 			</div>
-			<div class="control-group">
-				<label for="spread">Spread:</label>
-				<input type="range" id="spread" min="20" max="180" value="70">
-				<span id="spreadValue">70</span>
+			<div>
+				<label for="spread" class="block mb-2">Spread: <span id="spreadValue">70</span></label>
+				<input type="range" id="spread" min="20" max="180" value="70" class="w-full">
 			</div>
-			<div class="control-group">
-				<label for="angle">Angle:</label>
-				<input type="range" id="angle" min="0" max="360" value="90">
-				<span id="angleValue">90</span>
+			<div>
+				<label for="colors" class="block mb-2">Colors (comma-separated):</label>
+				<input type="text" id="colors" value="#ff0000,#00ff00,#0000ff" class="w-full p-2 border rounded">
 			</div>
-			<div class="control-group">
-				<label for="colors">Colors (comma-separated):</label>
-				<input type="text" id="colors" value="#ff0000,#00ff00,#0000ff">
-			</div>
-			<div class="control-group">
-				<label for="shapes">Shapes:</label>
-				<select id="shapes" multiple>
-					<option value="square" selected>Square</option>
-					<option value="circle" selected>Circle</option>
-					<option value="star">Star</option>
+			<div>
+				<label for="origins" class="block mb-2">Origins:</label>
+				<select id="origins" multiple class="w-full p-2 border rounded">
+					<option value="topLeft" selected>Top Left</option>
+					<option value="topCenter" selected>Top Center</option>
+					<option value="topRight" selected>Top Right</option>
+					<option value="middleLeft" selected>Middle Left</option>
+					<option value="center" selected>Center</option>
+					<option value="middleRight" selected>Middle Right</option>
+					<option value="bottomLeft" selected>Bottom Left</option>
+					<option value="bottomCenter" selected>Bottom Center</option>
+					<option value="bottomRight" selected>Bottom Right</option>
 				</select>
 			</div>
-			<div class="control-group">
-				<label for="origins">Origins:</label>
-				<select id="origins" multiple>
-					<option value="topLeft">Top Left</option>
-					<option value="topCenter">Top Center</option>
-					<option value="topRight">Top Right</option>
-					<option value="middleLeft">Middle Left</option>
-					<option value="center">Center</option>
-					<option value="middleRight">Middle Right</option>
-					<option value="bottomLeft">Bottom Left</option>
-					<option value="bottomCenter">Bottom Center</option>
-					<option value="bottomRight">Bottom Right</option>
-				</select>
+			<div class="space-x-4">
+				<button id="updateButton" class="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded">
+					Update Settings
+				</button>
+				<button id="testPopButton" class="bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded">
+					Test a Pop!
+				</button>
 			</div>
-			<button id="updateButton">Update Settings</button>
-			<button id="testPopButton">Test a Pop!</button>
-			<div id="toast"></div>
-			<script>
-				const vscode = acquireVsCodeApi();
-				
-				function updateSettings() {
-					const settings = {
-						particleCount: parseInt(document.getElementById('particleCount').value),
-						spread: parseInt(document.getElementById('spread').value),
-						angle: parseInt(document.getElementById('angle').value),
-						colors: document.getElementById('colors').value.split(',').map(c => c.trim()),
-						shapes: Array.from(document.getElementById('shapes').selectedOptions).map(o => o.value),
-						origins: Array.from(document.getElementById('origins').selectedOptions).map(o => o.value)
-					};
-					vscode.postMessage({ command: 'updateSettings', settings });
-				}
-				
-				function testPop() {
-					vscode.postMessage({ command: 'testPop' });
-				}
-				
-				document.getElementById('updateButton').addEventListener('click', updateSettings);
-				document.getElementById('testPopButton').addEventListener('click', testPop);
-				
-				// Update displayed values for sliders
-				['particleCount', 'spread', 'angle'].forEach(id => {
-					const slider = document.getElementById(id);
-					const valueSpan = document.getElementById(id + 'Value');
-					slider.addEventListener('input', () => {
-						valueSpan.textContent = slider.value;
-					});
+		</div>
+		<div id="toast" class="fixed bottom-4 left-1/2 transform -translate-x-1/2 bg-gray-800 text-white px-4 py-2 rounded opacity-0 transition-opacity duration-300"></div>
+		<script>
+			const vscode = acquireVsCodeApi();
+			
+			function updateSettings() {
+				const settings = {
+					particleCount: parseInt(document.getElementById('particleCount').value),
+					spread: parseInt(document.getElementById('spread').value),
+					colors: document.getElementById('colors').value.split(',').map(c => c.trim()),
+					origins: Array.from(document.getElementById('origins').selectedOptions).map(o => o.value)
+				};
+				vscode.postMessage({ command: 'updateSettings', settings });
+			}
+			
+			function testPop() {
+				vscode.postMessage({ command: 'testPop' });
+			}
+			
+			document.getElementById('updateButton').addEventListener('click', updateSettings);
+			document.getElementById('testPopButton').addEventListener('click', testPop);
+			
+			// Update displayed values for sliders
+			['particleCount', 'spread'].forEach(id => {
+				const slider = document.getElementById(id);
+				const valueSpan = document.getElementById(id + 'Value');
+				slider.addEventListener('input', () => {
+					valueSpan.textContent = slider.value;
 				});
-	
-				// Handle toast messages
-				window.addEventListener('message', event => {
-					if (event.data.command === 'showToast') {
-						const toast = document.getElementById('toast');
-						toast.textContent = event.data.message;
-						toast.style.opacity = '1';
-						setTimeout(() => {
-							toast.style.opacity = '0';
-						}, 3000);
-					}
-				});
-			</script>
-		</body>
-		</html>`;
-}
+			});
+  
+			// Handle toast messages
+			window.addEventListener('message', event => {
+				if (event.data.command === 'showToast') {
+					const toast = document.getElementById('toast');
+					toast.textContent = event.data.message;
+					toast.style.opacity = '1';
+					setTimeout(() => {
+						toast.style.opacity = '0';
+					}, 3000);
+				}
+			});
+		</script>
+	</body>
+	</html>`;
+  }
 
 function getConfettiWebviewContent() {
   return `<!DOCTYPE html>
