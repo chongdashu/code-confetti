@@ -92,223 +92,186 @@ function triggerConfetti() {
 
 function getPlaygroundWebviewContent() {
   return `<!DOCTYPE html>
+		<html lang="en">
+		<head>
+			<meta charset="UTF-8">
+			<meta name="viewport" content="width=device-width, initial-scale=1.0">
+			<title>Confetti Playground</title>
+			<style>
+				/* ... (previous styles remain the same) ... */
+			</style>
+		</head>
+		<body>
+			<h2>Confetti Playground</h2>
+			<div class="control-group">
+				<label for="particleCount">Particle Count:</label>
+				<input type="range" id="particleCount" min="10" max="200" value="100">
+				<span id="particleCountValue">100</span>
+			</div>
+			<div class="control-group">
+				<label for="spread">Spread:</label>
+				<input type="range" id="spread" min="20" max="180" value="70">
+				<span id="spreadValue">70</span>
+			</div>
+			<div class="control-group">
+				<label for="angle">Angle:</label>
+				<input type="range" id="angle" min="0" max="360" value="90">
+				<span id="angleValue">90</span>
+			</div>
+			<div class="control-group">
+				<label for="colors">Colors (comma-separated):</label>
+				<input type="text" id="colors" value="#ff0000,#00ff00,#0000ff">
+			</div>
+			<div class="control-group">
+				<label for="shapes">Shapes:</label>
+				<select id="shapes" multiple>
+					<option value="square" selected>Square</option>
+					<option value="circle" selected>Circle</option>
+					<option value="star">Star</option>
+				</select>
+			</div>
+			<div class="control-group">
+				<label for="origins">Origins:</label>
+				<select id="origins" multiple>
+					<option value="topLeft">Top Left</option>
+					<option value="topCenter">Top Center</option>
+					<option value="topRight">Top Right</option>
+					<option value="middleLeft">Middle Left</option>
+					<option value="center">Center</option>
+					<option value="middleRight">Middle Right</option>
+					<option value="bottomLeft">Bottom Left</option>
+					<option value="bottomCenter">Bottom Center</option>
+					<option value="bottomRight">Bottom Right</option>
+				</select>
+			</div>
+			<button id="updateButton">Update Settings</button>
+			<button id="testPopButton">Test a Pop!</button>
+			<div id="toast"></div>
+			<script>
+				const vscode = acquireVsCodeApi();
+				
+				function updateSettings() {
+					const settings = {
+						particleCount: parseInt(document.getElementById('particleCount').value),
+						spread: parseInt(document.getElementById('spread').value),
+						angle: parseInt(document.getElementById('angle').value),
+						colors: document.getElementById('colors').value.split(',').map(c => c.trim()),
+						shapes: Array.from(document.getElementById('shapes').selectedOptions).map(o => o.value),
+						origins: Array.from(document.getElementById('origins').selectedOptions).map(o => o.value)
+					};
+					vscode.postMessage({ command: 'updateSettings', settings });
+				}
+				
+				function testPop() {
+					vscode.postMessage({ command: 'testPop' });
+				}
+				
+				document.getElementById('updateButton').addEventListener('click', updateSettings);
+				document.getElementById('testPopButton').addEventListener('click', testPop);
+				
+				// Update displayed values for sliders
+				['particleCount', 'spread', 'angle'].forEach(id => {
+					const slider = document.getElementById(id);
+					const valueSpan = document.getElementById(id + 'Value');
+					slider.addEventListener('input', () => {
+						valueSpan.textContent = slider.value;
+					});
+				});
+	
+				// Handle toast messages
+				window.addEventListener('message', event => {
+					if (event.data.command === 'showToast') {
+						const toast = document.getElementById('toast');
+						toast.textContent = event.data.message;
+						toast.style.opacity = '1';
+						setTimeout(() => {
+							toast.style.opacity = '0';
+						}, 3000);
+					}
+				});
+			</script>
+		</body>
+		</html>`;
+}
+
+function getConfettiWebviewContent() {
+  return `<!DOCTYPE html>
 	  <html lang="en">
 	  <head>
 		  <meta charset="UTF-8">
 		  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-		  <title>Confetti Playground</title>
+		  <title>Confetti Display</title>
+		  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.1/dist/confetti.browser.min.js"></script>
 		  <style>
-			  body {
-				  font-family: Arial, sans-serif;
-				  padding: 20px;
-				  background-color: var(--vscode-editor-background);
-				  color: var(--vscode-editor-foreground);
+			  body, html { 
+				  margin: 0; 
+				  padding: 0; 
+				  height: 100%; 
+				  overflow: hidden; 
 			  }
-			  .control-group {
-				  margin-bottom: 15px;
-			  }
-			  label {
-				  display: block;
-				  margin-bottom: 5px;
-			  }
-			  input[type="range"], select {
-				  width: 100%;
-			  }
-			  button {
-				  background-color: var(--vscode-button-background);
-				  color: var(--vscode-button-foreground);
-				  border: none;
-				  padding: 10px 20px;
-				  cursor: pointer;
-				  font-size: 16px;
-				  border-radius: 5px;
-				  transition: all 0.3s ease;
-				  margin-right: 10px;
-			  }
-			  button:hover {
-				  transform: scale(1.05);
-				  box-shadow: 0 0 10px rgba(0,0,0,0.2);
-			  }
-			  button:active {
-				  transform: scale(0.95);
-			  }
-			  #toast {
-				  position: fixed;
-				  bottom: 20px;
-				  left: 50%;
-				  transform: translateX(-50%);
-				  background-color: var(--vscode-notifications-background);
-				  color: var(--vscode-notifications-foreground);
-				  padding: 10px 20px;
-				  border-radius: 5px;
-				  opacity: 0;
-				  transition: opacity 0.3s ease;
+			  #confetti-canvas { 
+				  position: fixed; 
+				  top: 0; 
+				  left: 0; 
+				  width: 100%; 
+				  height: 100%; 
+				  pointer-events: none; 
 			  }
 		  </style>
 	  </head>
 	  <body>
-		  <h2>Confetti Playground</h2>
-		  <div class="control-group">
-			  <label for="particleCount">Particle Count:</label>
-			  <input type="range" id="particleCount" min="10" max="200" value="100">
-			  <span id="particleCountValue">100</span>
-		  </div>
-		  <div class="control-group">
-			  <label for="spread">Spread:</label>
-			  <input type="range" id="spread" min="20" max="180" value="70">
-			  <span id="spreadValue">70</span>
-		  </div>
-		  <div class="control-group">
-			  <label for="colors">Colors (comma-separated):</label>
-			  <input type="text" id="colors" value="#ff0000,#00ff00,#0000ff">
-		  </div>
-		  <div class="control-group">
-			  <label for="shapes">Shapes:</label>
-			  <select id="shapes" multiple>
-				  <option value="square" selected>Square</option>
-				  <option value="circle" selected>Circle</option>
-				  <option value="star">Star</option>
-			  </select>
-		  </div>
-		  <div class="control-group">
-			  <label for="origins">Origins:</label>
-			  <select id="origins" multiple>
-				  <option value="topLeft">Top Left</option>
-				  <option value="topCenter">Top Center</option>
-				  <option value="topRight">Top Right</option>
-				  <option value="middleLeft">Middle Left</option>
-				  <option value="center">Center</option>
-				  <option value="middleRight">Middle Right</option>
-				  <option value="bottomLeft">Bottom Left</option>
-				  <option value="bottomCenter">Bottom Center</option>
-				  <option value="bottomRight">Bottom Right</option>
-			  </select>
-		  </div>
-		  <button id="updateButton">Update Settings</button>
-		  <button id="testPopButton">Test a Pop!</button>
-		  <div id="toast"></div>
+		  <canvas id="confetti-canvas"></canvas>
 		  <script>
 			  const vscode = acquireVsCodeApi();
+			  const canvas = document.getElementById('confetti-canvas');
+			  const myConfetti = confetti.create(canvas, { resize: true });
 			  
-			  function updateSettings() {
-				  const settings = {
-					  particleCount: parseInt(document.getElementById('particleCount').value),
-					  spread: parseInt(document.getElementById('spread').value),
-					  colors: document.getElementById('colors').value.split(',').map(c => c.trim()),
-					  shapes: Array.from(document.getElementById('shapes').selectedOptions).map(o => o.value),
-					  origins: Array.from(document.getElementById('origins').selectedOptions).map(o => o.value)
-				  };
-				  vscode.postMessage({ command: 'updateSettings', settings });
-			  }
+			  let confettiSettings = {
+				  particleCount: 100,
+				  spread: 70,
+				  angle: 90,
+				  colors: ['#ff0000', '#00ff00', '#0000ff'],
+				  shapes: ['square', 'circle'],
+				  origins: ['topLeft', 'topCenter', 'topRight', 'middleLeft', 'center', 'middleRight', 'bottomLeft', 'bottomCenter', 'bottomRight']
+			  };
 			  
-			  function testPop() {
-				  vscode.postMessage({ command: 'testPop' });
-			  }
+			  const originMap = {
+				  topLeft: { x: 0, y: 0 },
+				  topCenter: { x: 0.5, y: 0 },
+				  topRight: { x: 1, y: 0 },
+				  middleLeft: { x: 0, y: 0.5 },
+				  center: { x: 0.5, y: 0.5 },
+				  middleRight: { x: 1, y: 0.5 },
+				  bottomLeft: { x: 0, y: 1 },
+				  bottomCenter: { x: 0.5, y: 1 },
+				  bottomRight: { x: 1, y: 1 }
+			  };
 			  
-			  document.getElementById('updateButton').addEventListener('click', updateSettings);
-			  document.getElementById('testPopButton').addEventListener('click', testPop);
-			  
-			  // Update displayed values for sliders
-			  ['particleCount', 'spread'].forEach(id => {
-				  const slider = document.getElementById(id);
-				  const valueSpan = document.getElementById(id + 'Value');
-				  slider.addEventListener('input', () => {
-					  valueSpan.textContent = slider.value;
+			  function triggerConfetti() {
+				  const origin = originMap[confettiSettings.origins[Math.floor(Math.random() * confettiSettings.origins.length)]];
+				  myConfetti({
+					  particleCount: confettiSettings.particleCount,
+					  spread: confettiSettings.spread,
+					  angle: confettiSettings.angle,
+					  origin: origin,
+					  colors: confettiSettings.colors,
+					  shapes: confettiSettings.shapes
 				  });
-			  });
-  
-			  // Handle toast messages
+			  }
+			  
 			  window.addEventListener('message', event => {
-				  if (event.data.command === 'showToast') {
-					  const toast = document.getElementById('toast');
-					  toast.textContent = event.data.message;
-					  toast.style.opacity = '1';
-					  setTimeout(() => {
-						  toast.style.opacity = '0';
-					  }, 3000);
+				  switch (event.data.command) {
+					  case 'triggerConfetti':
+						  triggerConfetti();
+						  break;
+					  case 'updateSettings':
+						  confettiSettings = { ...confettiSettings, ...event.data.settings };
+						  break;
 				  }
 			  });
 		  </script>
 	  </body>
 	  </html>`;
-}
-
-function getConfettiWebviewContent() {
-  return `<!DOCTYPE html>
-    <html lang="en">
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Confetti Display</title>
-        <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.1/dist/confetti.browser.min.js"></script>
-        <style>
-            body, html { 
-                margin: 0; 
-                padding: 0; 
-                height: 100%; 
-                overflow: hidden; 
-            }
-            #confetti-canvas { 
-                position: fixed; 
-                top: 0; 
-                left: 0; 
-                width: 100%; 
-                height: 100%; 
-                pointer-events: none; 
-            }
-        </style>
-    </head>
-    <body>
-        <canvas id="confetti-canvas"></canvas>
-        <script>
-            const vscode = acquireVsCodeApi();
-            const canvas = document.getElementById('confetti-canvas');
-            const myConfetti = confetti.create(canvas, { resize: true });
-            
-            let confettiSettings = {
-                particleCount: 100,
-                spread: 70,
-                colors: ['#ff0000', '#00ff00', '#0000ff'],
-                shapes: ['square', 'circle'],
-                origins: ['topLeft', 'topCenter', 'topRight', 'middleLeft', 'center', 'middleRight', 'bottomLeft', 'bottomCenter', 'bottomRight']
-            };
-            
-            const originMap = {
-                topLeft: { x: 0, y: 0 },
-                topCenter: { x: 0.5, y: 0 },
-                topRight: { x: 1, y: 0 },
-                middleLeft: { x: 0, y: 0.5 },
-                center: { x: 0.5, y: 0.5 },
-                middleRight: { x: 1, y: 0.5 },
-                bottomLeft: { x: 0, y: 1 },
-                bottomCenter: { x: 0.5, y: 1 },
-                bottomRight: { x: 1, y: 1 }
-            };
-            
-            function triggerConfetti() {
-                const origin = originMap[confettiSettings.origins[Math.floor(Math.random() * confettiSettings.origins.length)]];
-                myConfetti({
-                    particleCount: confettiSettings.particleCount,
-                    spread: confettiSettings.spread,
-                    origin: origin,
-                    colors: confettiSettings.colors,
-                    shapes: confettiSettings.shapes
-                });
-            }
-            
-            window.addEventListener('message', event => {
-                switch (event.data.command) {
-                    case 'triggerConfetti':
-                        triggerConfetti();
-                        break;
-                    case 'updateSettings':
-                        confettiSettings = { ...confettiSettings, ...event.data.settings };
-                        break;
-                }
-            });
-        </script>
-    </body>
-    </html>`;
 }
 
 function handleDocumentChange(event: vscode.TextDocumentChangeEvent) {
