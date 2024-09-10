@@ -2,7 +2,7 @@
   "name": "confetti-code",
   "displayName": "confetti-code",
   "description": "Coding is more fun with confetti",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "engines": {
     "vscode": "^1.93.0"
   },
@@ -14,8 +14,12 @@
   "contributes": {
     "commands": [
       {
-        "command": "confetti-code.showConfettiSettings",
-        "title": "Show Confetti Settings"
+        "command": "confetti-code.showConfettiPlayground",
+        "title": "Show Confetti Playground"
+      },
+      {
+        "command": "confetti-code.showConfettiDisplay",
+        "title": "Show Confetti Display"
       },
       {
         "command": "confetti-code.triggerConfetti",
