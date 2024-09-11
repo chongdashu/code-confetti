@@ -1,71 +1,60 @@
-# confetti-code README
+# Confetti Coder
 
-This is the README for your extension "confetti-code". After writing up a brief description, we recommend including the following sections.
+Celebrate your coding victories with a burst of virtual confetti as you type!
 
 ## Features
 
-Describe specific features of your extension including screenshots of your extension in action. Image paths are relative to this README file.
+Confetti Coder brings a touch of celebration to your coding sessions:
 
-For example if there is an image subfolder under your extension project workspace:
+- **Automatic Confetti**: Watch confetti burst across your screen as you type, adding a fun and motivating element to your coding experience.
+- **Customizable Celebration**: Use the Celebration Playground to adjust confetti settings, including particle count, spread, colors, shapes, and origins.
+- **On-Demand Celebration**: Trigger a confetti burst whenever you want with a simple command.
 
-\!\[feature X\]\(images/feature-x.png\)
+## Installation
 
-> Tip: Many popular extensions utilize animations. This is an excellent way to show off your extension! We recommend short, focused animations that are easy to follow.
+1. Open Visual Studio Code
+2. Go to the Extensions view (Ctrl+Shift+X or Cmd+Shift+X on macOS)
+3. Search for "Confetti Coder"
+4. Click Install
+
+## Usage
+
+After installation, Confetti Coder will automatically celebrate your coding progress by showing confetti as you type. You can also use the following commands:
+
+- `Show Celebration Playground`: Open a panel to customize your confetti settings.
+- `Show Confetti Display`: Open a dedicated panel for displaying confetti.
+- `Trigger Celebration!`: Manually trigger a confetti burst.
+
+To access these commands, open the Command Palette (Ctrl+Shift+P or Cmd+Shift+P on macOS) and type "Confetti Coder".
+
+## Customization
+
+Open the Celebration Playground to adjust your confetti settings:
+
+- Particle Count: Control how many confetti pieces appear in each burst.
+- Spread: Adjust how wide the confetti spreads.
+- Colors: Customize the colors of your confetti.
+- Shapes: Choose from squares, circles, and stars.
+- Origins: Select where the confetti originates from on the screen.
 
 ## Requirements
 
-If you have any requirements or dependencies, add a section describing those and how to install and configure them.
-
-## Extension Settings
-
-Include if your extension adds any VS Code settings through the `contributes.configuration` extension point.
-
-For example:
-
-This extension contributes the following settings:
-
-* `myExtension.enable`: Enable/disable this extension.
-* `myExtension.thing`: Set to `blah` to do something.
+Confetti Coder requires Visual Studio Code version 1.93.0 or higher.
 
 ## Known Issues
 
-Calling out known issues can help limit users opening duplicate issues against your extension.
+Please report any issues you encounter on our [GitHub repository](https://github.com/yourusername/confetti-coder/issues).
 
 ## Release Notes
 
-Users appreciate release notes as you update your extension.
+### 0.0.2
 
-### 1.0.0
+Initial release of Confetti Coder:
 
-Initial release of ...
-
-### 1.0.1
-
-Fixed issue #.
-
-### 1.1.0
-
-Added features X, Y, and Z.
+- Automatic confetti display while typing
+- Customizable confetti settings
+- On-demand confetti trigger
 
 ---
 
-## Following extension guidelines
-
-Ensure that you've read through the extensions guidelines and follow the best practices for creating your extension.
-
-* [Extension Guidelines](https://code.visualstudio.com/api/references/extension-guidelines)
-
-## Working with Markdown
-
-You can author your README using Visual Studio Code. Here are some useful editor keyboard shortcuts:
-
-* Split the editor (`Cmd+\` on macOS or `Ctrl+\` on Windows and Linux).
-* Toggle preview (`Shift+Cmd+V` on macOS or `Shift+Ctrl+V` on Windows and Linux).
-* Press `Ctrl+Space` (Windows, Linux, macOS) to see a list of Markdown snippets.
-
-## For more information
-
-* [Visual Studio Code's Markdown Support](http://code.visualstudio.com/docs/languages/markdown)
-* [Markdown Syntax Reference](https://help.github.com/articles/markdown-basics/)
-
-**Enjoy!**
+**Enjoy coding with a burst of celebration!** 🎉
