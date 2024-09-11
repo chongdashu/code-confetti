@@ -1,9 +1,21 @@
 # Change Log
 
-All notable changes to the "confetti-code" extension will be documented in this file.
+### 0.1.2
 
-Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how to structure this file.
+Fixed command palette
 
-## [Unreleased]
+- Commands from command palette work.
 
-- Initial release
+### 0.1.1
+
+Minor update to extension
+
+- Added icon for marketplace.
+
+### 0.1.0
+
+Initial release of Confetti Coder:
+
+- Automatic confetti display while typing
+- Customizable confetti settings
+- On-demand confetti trigger

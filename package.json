@@ -3,7 +3,7 @@
   "displayName": "Confetti Coder",
   "description": "Celebrate your coding victories with a burst of virtual confetti as you type.",
   "publisher": "chongdashu",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "engines": {
     "vscode": "^1.93.0"
   },
@@ -35,15 +35,15 @@
     "commands": [
       {
         "command": "confetti-coder.showConfettiPlayground",
-        "title": "Show Celebration Playground"
+        "title": "Confetti Coder: Show Playground"
       },
       {
         "command": "confetti-coder.showConfettiDisplay",
-        "title": "Show Confetti Display"
+        "title": "Confetti Coder: Show Confetti Display"
       },
       {
         "command": "confetti-coder.triggerConfetti",
-        "title": "Trigger Celebration!"
+        "title": "Celebration: Trigger Celebration!"
       }
     ]
   },

@@ -91,7 +91,7 @@ function triggerConfetti() {
 }
 
 function getPlaygroundWebviewContent() {
-	return `<!DOCTYPE html>
+  return `<!DOCTYPE html>
 	<html lang="en">
 	<head>
 		<meta charset="UTF-8">
@@ -181,7 +181,7 @@ function getPlaygroundWebviewContent() {
 		</script>
 	</body>
 	</html>`;
-  }
+}
 
 function getConfettiWebviewContent() {
   return `<!DOCTYPE html>
@@ -295,21 +295,21 @@ export function activate(context: vscode.ExtensionContext) {
   });
 
   let showPlaygroundDisposable = vscode.commands.registerCommand(
-    "confetti-code.showConfettiPlayground",
+    "confetti-coder.showConfettiPlayground",
     () => {
       createPlaygroundWebview(context);
     }
   );
 
   let showConfettiDisposable = vscode.commands.registerCommand(
-    "confetti-code.showConfettiDisplay",
+    "confetti-coder.showConfettiDisplay",
     () => {
       createConfettiWebview(context);
     }
   );
 
   let triggerConfettiDisposable = vscode.commands.registerCommand(
-    "confetti-code.triggerConfetti",
+    "confetti-coder.triggerConfetti",
     () => {
       triggerConfetti();
     }
