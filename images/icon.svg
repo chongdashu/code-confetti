@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 300">
+  <defs>
+    <linearGradient id="bg-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#282c34;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#1c1e24;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  
+  <!-- Background -->
+  <rect x="20" y="20" width="260" height="260" fill="url(#bg-gradient)" rx="30" ry="30"/>
+  
+  <!-- Code braces -->
+  <text x="150" y="180" font-family="Arial, sans-serif" font-size="120" fill="#61dafb" text-anchor="middle" font-weight="bold">{}</text>
+  
+  <!-- Confetti pieces -->
+  <g>
+    <circle cx="60" cy="60" r="10" fill="#ff6b6b" />
+    <rect x="230" y="50" width="20" height="20" fill="#4ecdc4" transform="rotate(45 240 60)" />
+    <polygon points="60,230 70,250 50,250" fill="#feca57" />
+    <circle cx="240" cy="240" r="12" fill="#ff9ff3" />
+    <rect x="130" y="40" width="16" height="16" fill="#f9ca24" transform="rotate(30 138 48)" />
+    <polygon points="230,140 242,160 218,160" fill="#6ab04c" />
+  </g>
+  
+</svg>
