@@ -47,7 +47,7 @@ Please report any issues you encounter on our [GitHub repository](https://github
 
 ## Release Notes
 
-### 0.0.2
+### 0.1.0
 
 Initial release of Confetti Coder:
 

@@ -2,7 +2,7 @@
   "name": "confetti-coder",
   "displayName": "Confetti Coder",
   "description": "Celebrate your coding victories with a burst of virtual confetti as you type.",
-  "version": "1.0.0",
+  "version": "0.1.0",
   "engines": {
     "vscode": "^1.93.0"
   },
@@ -19,6 +19,14 @@
     "motivation",
     "productivity"
   ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/chongdashu/vscode-confetti-coder.git"
+  },
+  "homepage": "https://github.com/chongdashu/vscode-confetti-coder#readme",
+  "bugs": {
+    "url": "https://github.com/chongdashu/vscode-confetti-coder/issues"
+  },
   "activationEvents": [],
   "main": "./out/extension.js",
   "contributes": {
