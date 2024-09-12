@@ -35,7 +35,7 @@
     "commands": [
       {
         "command": "confetti-coder.showConfettiPlayground",
-        "title": "Confetti Coder: Show Playground"
+        "title": "Confetti Coder: Show Settings Playground"
       },
       {
         "command": "confetti-coder.showConfettiDisplay",
@@ -43,7 +43,7 @@
       },
       {
         "command": "confetti-coder.triggerConfetti",
-        "title": "Celebration: Trigger Celebration!"
+        "title": "Confetti Coder: Trigger Celebration!"
       }
     ]
   },

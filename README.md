@@ -45,16 +45,6 @@ Confetti Coder requires Visual Studio Code version 1.93.0 or higher.
 
 Please report any issues you encounter on our [GitHub repository](https://github.com/yourusername/confetti-coder/issues).
 
-## Release Notes
-
-### 0.1.0
-
-Initial release of Confetti Coder:
-
-- Automatic confetti display while typing
-- Customizable confetti settings
-- On-demand confetti trigger
-
 ---
 
 **Enjoy coding with a burst of celebration!** 🎉

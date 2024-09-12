@@ -4,75 +4,76 @@ let playgroundPanel: vscode.WebviewPanel | undefined;
 let confettiPanel: vscode.WebviewPanel | undefined;
 
 function createPlaygroundWebview(context: vscode.ExtensionContext) {
-  if (playgroundPanel) {
-    playgroundPanel.reveal();
-    return;
+	if (playgroundPanel) {
+	  playgroundPanel.reveal();
+	  return;
+	}
+  
+	playgroundPanel = vscode.window.createWebviewPanel(
+	  "confettiPlayground",
+	  "Confetti Playground",
+	  vscode.ViewColumn.Two,
+	  {
+		enableScripts: true,
+		retainContextWhenHidden: true,
+	  }
+	);
+  
+	playgroundPanel.webview.html = getPlaygroundWebviewContent();
+  
+	playgroundPanel.onDidDispose(() => {
+	  playgroundPanel = undefined;
+	}, null);
+  
+	context.subscriptions.push(playgroundPanel);
+  
+	// Handle messages from the webview
+	playgroundPanel.webview.onDidReceiveMessage(
+	  (message) => {
+		switch (message.command) {
+		  case "updateSettings":
+			updateConfettiSettings(message.settings);
+			triggerConfetti();
+			playgroundPanel?.webview.postMessage({
+			  command: "showToast",
+			  message: "Settings updated!",
+			});
+			break;
+		  case "testPop":
+			triggerConfetti();
+			break;
+		}
+	  },
+	  undefined,
+	  context.subscriptions
+	);
+  }
+  
+  function createConfettiWebview(context: vscode.ExtensionContext) {
+	if (confettiPanel) {
+	  confettiPanel.reveal();
+	  return;
+	}
+  
+	confettiPanel = vscode.window.createWebviewPanel(
+	  "confettiView",
+	  "Confetti Display",
+	  vscode.ViewColumn.Three,
+	  {
+		enableScripts: true,
+		retainContextWhenHidden: true,
+	  }
+	);
+  
+	confettiPanel.webview.html = getConfettiWebviewContent();
+  
+	confettiPanel.onDidDispose(() => {
+	  confettiPanel = undefined;
+	}, null);
+  
+	context.subscriptions.push(confettiPanel);
   }
 
-  playgroundPanel = vscode.window.createWebviewPanel(
-    "confettiPlayground",
-    "Confetti Playground",
-    vscode.ViewColumn.Two,
-    {
-      enableScripts: true,
-      retainContextWhenHidden: true,
-    }
-  );
-
-  playgroundPanel.webview.html = getPlaygroundWebviewContent();
-
-  playgroundPanel.onDidDispose(() => {
-    playgroundPanel = undefined;
-  }, null);
-
-  context.subscriptions.push(playgroundPanel);
-
-  // Handle messages from the webview
-  playgroundPanel.webview.onDidReceiveMessage(
-    (message) => {
-      switch (message.command) {
-        case "updateSettings":
-          updateConfettiSettings(message.settings);
-          triggerConfetti();
-          playgroundPanel?.webview.postMessage({
-            command: "showToast",
-            message: "Settings updated!",
-          });
-          break;
-        case "testPop":
-          triggerConfetti();
-          break;
-      }
-    },
-    undefined,
-    context.subscriptions
-  );
-}
-
-function createConfettiWebview(context: vscode.ExtensionContext) {
-  if (confettiPanel) {
-    confettiPanel.reveal();
-    return;
-  }
-
-  confettiPanel = vscode.window.createWebviewPanel(
-    "confettiView",
-    "Confetti Display",
-    vscode.ViewColumn.Three,
-    {
-      enableScripts: true,
-      retainContextWhenHidden: true,
-    }
-  );
-
-  confettiPanel.webview.html = getConfettiWebviewContent();
-
-  confettiPanel.onDidDispose(() => {
-    confettiPanel = undefined;
-  }, null);
-
-  context.subscriptions.push(confettiPanel);
-}
 
 function updateConfettiSettings(settings: any) {
   if (confettiPanel) {
@@ -279,52 +280,43 @@ function handleDocumentChange(event: vscode.TextDocumentChangeEvent) {
 }
 
 export function activate(context: vscode.ExtensionContext) {
-  console.log('Extension "confetti-code" is loading...');
-
-  vscode.window.showInformationMessage("Confetti Code is loading...", {
-    modal: false,
-  });
-
-  // Create both webviews when the extension activates
-  createPlaygroundWebview(context);
-  createConfettiWebview(context);
-
-  console.log('Extension "confetti-code" is now active!');
-  vscode.window.showInformationMessage("Confetti Code is ready!", {
-    modal: false,
-  });
-
-  let showPlaygroundDisposable = vscode.commands.registerCommand(
-    "confetti-coder.showConfettiPlayground",
-    () => {
-      createPlaygroundWebview(context);
-    }
-  );
-
-  let showConfettiDisposable = vscode.commands.registerCommand(
-    "confetti-coder.showConfettiDisplay",
-    () => {
-      createConfettiWebview(context);
-    }
-  );
-
-  let triggerConfettiDisposable = vscode.commands.registerCommand(
-    "confetti-coder.triggerConfetti",
-    () => {
-      triggerConfetti();
-    }
-  );
-
-  context.subscriptions.push(
-    showPlaygroundDisposable,
-    showConfettiDisposable,
-    triggerConfettiDisposable
-  );
-
-  let changeDisposable =
-    vscode.workspace.onDidChangeTextDocument(handleDocumentChange);
-  context.subscriptions.push(changeDisposable);
-}
+	console.log('Extension "confetti-code" is loading...');
+  
+	vscode.window.showInformationMessage("Confetti Code is ready!", {
+	  modal: false,
+	});
+  
+	let showPlaygroundDisposable = vscode.commands.registerCommand(
+	  "confetti-coder.showConfettiPlayground",
+	  () => {
+		createPlaygroundWebview(context);
+	  }
+	);
+  
+	let showConfettiDisposable = vscode.commands.registerCommand(
+	  "confetti-coder.showConfettiDisplay",
+	  () => {
+		createConfettiWebview(context);
+	  }
+	);
+  
+	let triggerConfettiDisposable = vscode.commands.registerCommand(
+	  "confetti-coder.triggerConfetti",
+	  () => {
+		triggerConfetti();
+	  }
+	);
+  
+	context.subscriptions.push(
+	  showPlaygroundDisposable,
+	  showConfettiDisposable,
+	  triggerConfettiDisposable
+	);
+  
+	let changeDisposable =
+	  vscode.workspace.onDidChangeTextDocument(handleDocumentChange);
+	context.subscriptions.push(changeDisposable);
+  }
 
 export function deactivate() {
   if (playgroundPanel) {
