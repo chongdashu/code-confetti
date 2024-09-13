@@ -1,5 +1,15 @@
 # Change Log
 
+### 0.1.4
+
+- Confetti display shows without settings playground
+
+### 0.1.3
+
+Fixed command palette
+
+- Commands from command palette work correctly.
+
 ### 0.1.2
 
 Fixed command palette
