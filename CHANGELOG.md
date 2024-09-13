@@ -1,5 +1,9 @@
 # Change Log
 
+### 0.1.5
+
+- Auto-load on install.
+
 ### 0.1.4
 
 - Confetti display shows without settings playground
